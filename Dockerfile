@@ -1,7 +1,8 @@
-FROM ubuntu
-RUN apt-get install golang-go & \
-  export PATH=$PATH:/usr/local/go/bin 
-WORKDIR /project/src/
-COPY . .
+FROM golang:latest
+
+WORKDIR /go/src/
+COPY . /go/src
 EXPOSE 3030
-CMD ["/project/src/practice-01"]
+RUN go get "github.com/gorilla/mux"
+CMD ["go build", "."]
+ENTRYPOINT ["/go/src/practice-01"]

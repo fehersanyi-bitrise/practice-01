@@ -2,6 +2,7 @@ package main
 
 import (
 	"reflect"
+	"strings"
 	"testing"
 )
 
@@ -17,7 +18,7 @@ func Test_charCount(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := charCount(tt.args); !reflect.DeepEqual(got, tt.want) {
+			if got := dupCount(strings.Split(tt.args, "")); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("charCount() = %v, want %v", got, tt.want)
 			}
 		})

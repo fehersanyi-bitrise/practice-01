@@ -19,7 +19,8 @@ func handleCount(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
 		log.Fatal(err)
 	}
-	response, err := json.Marshal(dupCount(strings.Split(data.Data, "")))
+
+	response, err := json.Marshal(dupCount(data.Data))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -28,19 +29,18 @@ func handleCount(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func dupCount(list []string) map[string]int {
-
+func dupCount(s string) map[string]int {
+	list := strings.Split(s, "")
 	duplicateFrequency := make(map[string]int)
 
 	for _, item := range list {
-		// check if the item/element exist in the duplicate_frequency map
 
 		_, exist := duplicateFrequency[item]
 
 		if exist {
-			duplicateFrequency[item]++ // increase counter by 1 if already in the map
+			duplicateFrequency[item]++
 		} else {
-			duplicateFrequency[item] = 1 // else start counting from 1
+			duplicateFrequency[item] = 1
 		}
 	}
 	return duplicateFrequency

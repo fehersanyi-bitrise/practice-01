@@ -1,4 +1,4 @@
 #/bin/bash
 
-docker rmi pra -f
-docker rm runpra -f
+docker-compose down
+docker rmi practice-01_db practice-01_backend -f

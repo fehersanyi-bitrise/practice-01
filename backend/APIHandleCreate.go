@@ -24,39 +24,51 @@ type command struct {
 // }
 
 func handleAPICreateCommand(w http.ResponseWriter, r *http.Request) {
-	var db *sql.DB
 	//	initDB(db)
 
-	connStr := "user=infra dbname=infra sslmode=disable"
+	connStr := "user=infra password=1234 dbname=infra sslmode=disable"
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Error connecting to DB %s\n", err)
 	}
+
+	defer func() {
+		if err := db.Close(); err != nil {
+			log.Fatalf("error closing connection: %s\n", err)
+		}
+	}()
 
 	if r.Method != "POST" {
 		http.Error(w, http.StatusText(405), http.StatusMethodNotAllowed)
 		return
 	}
+
 	c := command{}
 	if err := json.NewDecoder(r.Body).Decode(&c); err != nil {
-		log.Fatal(err)
+		log.Fatalf("Error decoding request %s\n", err)
 	}
 
-	res, err := db.Query("SELECT * FROM cmdb;")
+	rows, err := db.Query("SELECT * FROM cmdb")
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Error querrying table %s\n", err)
 	}
 
 	rv := command{}
-	err = res.Scan(rv.ID, rv.Command, rv.Log)
-	if err != nil {
-		log.Fatal(err)
+	for rows.Next() {
+		if err = rows.Scan(&rv.ID, &rv.Command, &rv.Log); err != nil {
+			log.Fatalf("Error converting values %s\n", err)
+		}
 	}
-	log.Print(rv.ID)
+
 	// res, err := db.Query(`INSERT INTO cmdb (ID, COMMAND, LOGS) VALUES ($1, $2, $3);`, c.ID, c.Command, c.Log)
 	// send, err := res.Columns()
 	// if err != nil {
 	// 	log.Fatal(err)
 	// }
-	w.Write([]byte(rv.ID))
+	if rv.ID == "" {
+		rv.ID = "empty"
+	}
+	if _, err := w.Write([]byte(rv.ID)); err != nil {
+		log.Fatalf("Error sending back results %s\n", err)
+	}
 }

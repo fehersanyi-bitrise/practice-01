@@ -1,7 +1,7 @@
-CREATE DATABASE infra;
-
 CREATE TABLE cmdb (
   ID      TEXT NOT NULL,
   COMMAND TEXT NOT NULL,
   LOGS    TEXT NOT NULL
 );
+
+INSERT INTO cmdb (ID, COMMAND, LOGS) VALUES ('test', 'ls', 'gyasz');

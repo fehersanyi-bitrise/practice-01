@@ -8,3 +8,6 @@ services:
     build: ./db/
     ports:
       - "5432:5432"
+    environment:
+     - POSTGRES_USER=infra
+     - POSTGRES_PASSWORD=1234

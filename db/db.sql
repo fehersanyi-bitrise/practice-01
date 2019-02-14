@@ -5,3 +5,4 @@ CREATE TABLE cmdb (
 );
 
 INSERT INTO cmdb (ID, COMMAND, LOGS) VALUES ('test', 'ls', 'gyasz');
+INSERT INTO cmdb (ID, COMMAND, LOGS) VALUES ('test2', 'ls2', 'gyasz2');

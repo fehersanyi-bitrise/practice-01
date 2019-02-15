@@ -12,13 +12,19 @@ func handleAPIGetLog(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewDecoder(r.Body).Decode(&cmd); err != nil {
 		log.Printf("Decoder: %s", err)
 	}
+
 	mds, err := callDB()
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 	}
+
 	resp, err := json.Marshal(mds[cmd.ID].Log)
 	if err != nil {
 		log.Println(err)
 	}
-	w.Write(resp)
+
+	_, err = w.Write(resp)
+	if err != nil {
+		log.Println(err)
+	}
 }

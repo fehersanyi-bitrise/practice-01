@@ -19,7 +19,10 @@ func handleAPIGetCommands(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 	}
-	w.Write(res)
+	_, err = w.Write(res)
+	if err != nil {
+		log.Println(err)
+	}
 }
 
 func callDB() (map[int]command, error) {
@@ -29,7 +32,12 @@ func callDB() (map[int]command, error) {
 	if err != nil {
 		return cmdMap, err
 	}
-	defer db.Close()
+
+	defer func() {
+		if err := db.Close(); err != nil {
+			log.Println(err)
+		}
+	}()
 
 	rows, err := db.Query("select * from cmdb")
 	if err != nil {

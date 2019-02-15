@@ -21,7 +21,12 @@ func APIHandleCreate(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 	}
-	defer db.Close()
+
+	defer func() {
+		if err := db.Close(); err != nil {
+			log.Println(err)
+		}
+	}()
 
 	cmd.Log, err = sendToAgent(cmd)
 	log.Printf("got your response: %s", cmd.Log)
@@ -60,7 +65,13 @@ func sendToAgent(cmd command) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	defer resp.Body.Close()
+
+	defer func() {
+		if err := resp.Body.Close(); err != nil {
+			log.Println(err)
+		}
+	}()
+
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return "", err

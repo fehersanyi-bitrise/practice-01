@@ -24,20 +24,23 @@ import (
 	"github.com/spf13/cobra"
 )
 
+type command struct {
+	ID      int    `json:"id"`
+	Command string `json:"command"`
+	Flag    string `json:"flag"`
+	Log     string `json:"log"`
+}
+
 // createCmd represents the create command
 var createCmd = &cobra.Command{
 	Use:   "create",
 	Short: "runs the command, stores in database",
 	Long:  `With this command, you can run a terminal command in the agent container and store it in the database`,
 	Run: func(cmd *cobra.Command, args []string) {
-		type command struct {
-			ID      int    `json:"id"`
-			Command string `json:"command"`
-			Flag    string `json:"flag"`
-			Log     string `json:"log"`
-		}
+		var err error
 		samplecommand := command{}
-		samplecommand.Command = "pwd"
+		samplecommand.Command, _ = cmd.Flags().GetString("command")
+		samplecommand.Flag, _ = cmd.Flags().GetString("flag")
 		message, _ := json.Marshal(samplecommand)
 		req, err := http.NewRequest("POST", "http://localhost:3030/API/create", bytes.NewBuffer(message))
 		if err != nil {
@@ -64,15 +67,7 @@ var createCmd = &cobra.Command{
 }
 
 func init() {
+	createCmd.Flags().StringP("command", "c", "", "the command you would run")
+	createCmd.Flags().StringP("flag", "f", "", "command flag or path")
 	rootCmd.AddCommand(createCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// createCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// createCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

@@ -2,7 +2,8 @@ FROM golang AS builder
 
 WORKDIR /go/src/github.com/fehersanyi/practice-01
 COPY . .
-RUN CGO_ENABLED=1 GOOS=linux go build -a -installsuffix cgo -o iserver main.go run.go fizzbuzz.go handleCount.go APIHandleCreate.go handleError.go command.go
+RUN CGO_ENABLED=1 GOOS=linux go build -a -installsuffix cgo -o \
+iserver main.go run.go fizzbuzz.go handleCount.go APIHandleCreate.go handleError.go command.go APIHandleList.go
 
 FROM centos:latest
 

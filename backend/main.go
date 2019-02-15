@@ -13,5 +13,6 @@ func main() {
 	router.HandleFunc("/count", handleCount).Methods("POST")
 	router.HandleFunc("/run", handleRun).Methods("POST")
 	router.HandleFunc("/API/list", handleAPIGetCommands).Methods("GET")
+	router.HandleFunc("/API/create", APIHandleCreate).Methods("POST")
 	log.Fatal(http.ListenAndServe(":3030", router))
 }

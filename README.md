@@ -1,6 +1,10 @@
 # practice-01
 practice-01
 
+## Add a command
+`http POST localhost:3030/API/create command=ls flag=notrequired path=.`
+
+
 
 ## basic
 
@@ -28,11 +32,11 @@ The server can be started and listens on localhost:3030 `check`
  
 Endpoint: new Task (a simple shell command) can be added through a POST request `check`
 
-//when a new Task is added execute the specified command (example command: ls -alh) and store the log/output of the command for the Task
+when a new Task is added execute the specified command (example command: ls -alh) and store the log/output of the command for the Task `check`
 
 Endpoint: list the Tasks `check`
 
-//Endpoint: get the log/output of a specified Task
+Endpoint: get the log/output of a specified Task `check`
 
 Store the tasks and their outputs in the memory `nope`
 

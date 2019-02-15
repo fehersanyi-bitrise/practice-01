@@ -19,8 +19,11 @@ func handleRun(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewDecoder(r.Body).Decode(&command); err != nil {
 		log.Fatal(err)
 	}
-
-	response, err := json.Marshal(runCmd(command.Command))
+	exec, err := runCmd(command.Command)
+	if err != nil {
+		log.Printf("failed to execute command %s", err)
+	}
+	response, err := json.Marshal(exec)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -30,10 +33,10 @@ func handleRun(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func runCmd(c string) string {
+func runCmd(c string) (string, error) {
 	out, err := exec.Command(c).Output()
 	if err != nil {
-		log.Fatal(err)
+		return "", err
 	}
-	return string(out)
+	return string(out), nil
 }

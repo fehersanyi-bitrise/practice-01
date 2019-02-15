@@ -17,21 +17,25 @@ func APIHandleCreate(w http.ResponseWriter, r *http.Request) {
 	connstr := "user=infra password=1234 dbname=infra host=db sslmode=disable"
 	db, err := sql.Open("postgres", connstr)
 	if err != nil {
-		log.Panicln(err)
+		log.Println(err)
 	}
 	defer db.Close()
 
-	_, err = db.Query(`insert into cmdb (ID, COMMAND, LOGS) values ($1, $2, $3)`, cmd.ID, cmd.Command, cmd.Log)
+	cmd.Log, err = runCmd(cmd.Command)
 	if err != nil {
-		log.Panicln(err)
+		cmd.Log = err.Error()
+	}
+	_, err = db.Query(`insert into cmdb (COMMAND, LOGS) values ($1, $2)`, cmd.Command, cmd.Log)
+	if err != nil {
+		log.Printf("Error adding row: %s", err)
 	}
 
-	response, err := json.Marshal(cmd)
+	response, err := json.Marshal(cmd.Log)
 	if err != nil {
-		log.Panicln(err)
+		log.Println(err)
 	}
-	log.Printf("%#v", response)
+
 	if _, err := w.Write(response); err != nil {
-		log.Panicln(err)
+		log.Println(err)
 	}
 }

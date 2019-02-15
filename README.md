@@ -46,7 +46,7 @@ Store the tasks and their outputs in the memory `nope`
 
 Use a database for storing the task data `check`
 
-//Separate Worker, which fetches the task/command from the Server, executes it and sends the logs etc. back to the server. In short: remove the command execution from the Server.
+Separate Worker, which fetches the task/command from the Server, executes it and sends the logs etc. back to the server. In short: remove the command execution from the Server. `check`
 
 Run the Task/command in a docker container `check`
 

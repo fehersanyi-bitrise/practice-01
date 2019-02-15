@@ -33,10 +33,21 @@ func handleRun(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func runCmd(c string) (string, error) {
-	out, err := exec.Command(c).Output()
+func runCmd(c string, f ...string) (string, error) {
+	log.Println(f)
+	if len(f) > 0 {
+		if f[0] == "" {
+			out, err := exec.Command(c).Output()
+			if err != nil {
+				return "", err
+			}
+			return string(out), nil
+		}
+	}
+	out, err := exec.Command(c, f[0]).Output()
+	log.Printf("%s", out)
 	if err != nil {
-		return "", err
+		return string(out), err
 	}
 	return string(out), nil
 }

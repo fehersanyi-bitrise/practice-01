@@ -21,11 +21,12 @@ func APIHandleCreate(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	cmd.Log, err = runCmd(cmd.Command)
+	cmd.Log, err = runCmd(cmd.Command, cmd.Flag)
 	if err != nil {
 		cmd.Log = err.Error()
 	}
-	_, err = db.Query(`insert into cmdb (COMMAND, LOGS) values ($1, $2)`, cmd.Command, cmd.Log)
+
+	_, err = db.Query(`insert into cmdb (COMMAND, FLAG, LOGS) values ($1, $2, $3)`, cmd.Command, cmd.Flag, cmd.Log)
 	if err != nil {
 		log.Printf("Error adding row: %s", err)
 	}

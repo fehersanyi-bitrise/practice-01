@@ -6,6 +6,12 @@ services:
      - "3030:3030"
     depends_on: 
       - db
+  agent:
+    build: ./agent/
+    ports:
+    - "3000:3000"
+    depends_on:
+    - backend
   db:
     build: ./db/
     ports:

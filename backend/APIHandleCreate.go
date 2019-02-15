@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bytes"
 	"database/sql"
 	"encoding/json"
+	"io/ioutil"
 	"log"
 	"net/http"
 )
@@ -21,7 +23,8 @@ func APIHandleCreate(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	cmd.Log, err = runCmd(cmd.Command, cmd.Flag)
+	cmd.Log, err = sendToAgent(cmd)
+	log.Printf("got your response: %s", cmd.Log)
 	if err != nil {
 		cmd.Log = err.Error()
 	}
@@ -39,4 +42,28 @@ func APIHandleCreate(w http.ResponseWriter, r *http.Request) {
 	if _, err := w.Write(response); err != nil {
 		log.Println(err)
 	}
+}
+
+func sendToAgent(cmd command) (string, error) {
+	message, err := json.Marshal(cmd)
+	if err != nil {
+		return "", err
+	}
+	req, err := http.NewRequest("POST", "http://agent:3000/API/run", bytes.NewBuffer(message))
+	if err != nil {
+		return "", err
+	}
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+	return string(body), nil
 }

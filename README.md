@@ -1,8 +1,6 @@
 # practice-01
 practice-01
 
-## Add a command
-`http POST localhost:3030/API/create command=ls flag=notrequired path=.`
 
 
 
@@ -42,7 +40,7 @@ Store the tasks and their outputs in the memory `nope`
 
 //Write a reasonable amount of unit tests
 
-###Extras (not in order, feel free to choose any of these)
+### Extras (not in order, feel free to choose any of these)
 
 //Simple CLI tool to manage the tasks & query logs - commands for the endpoints of the server (create, list and get logs)
 

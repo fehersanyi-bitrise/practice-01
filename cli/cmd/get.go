@@ -15,7 +15,12 @@
 package cmd
 
 import (
-	"fmt"
+	"bytes"
+	"encoding/json"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"strconv"
 
 	"github.com/spf13/cobra"
 )
@@ -31,20 +36,41 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("get called")
+		id := command{}
+		sv, err := strconv.Atoi(args[0])
+		if err != nil {
+			log.Printf("can't convert string into int %s", err)
+		}
+		id.ID = sv
+		sendid, err := json.Marshal(id)
+		if err != nil {
+			log.Printf("Could not marshal argument: %s", err)
+		}
+		req, err := http.NewRequest("POST", "http://localhost:3030/API/get", bytes.NewBuffer(sendid))
+		if err != nil {
+			log.Printf("request failed: %s", err)
+		}
+		req.Header.Set("Content-Type", "application/json")
+		client := &http.Client{}
+		resp, err := client.Do(req)
+		if err != nil {
+			log.Println(err)
+		}
+		defer func() {
+			if err := resp.Body.Close(); err != nil {
+				log.Println(err)
+			}
+		}()
+		body, err := ioutil.ReadAll(resp.Body)
+		err = json.Unmarshal(body, &id.Log)
+		if err != nil {
+			log.Printf("can't read body %s", err)
+		}
+		log.Print(id)
+		log.Print(resp.Status)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(getCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// getCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// getCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

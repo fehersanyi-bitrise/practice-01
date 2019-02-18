@@ -8,3 +8,25 @@ workflows:
     - golint:
     - errcheck:
     - go-test:
+  build:
+    steps:
+    - script:
+        inputs:
+        - content: |-
+            #!/usr/bin/env bash
+            # fail if any commands fails
+            set -e
+            set -x
+            go install ./cli/
+            docker-compose up
+  clean:
+      steps:
+      - script:
+          inputs:
+          - content: |-
+              #!/usr/bin/env bash
+              # fail if any commands fails
+              set -e
+              set -x
+              docker-compose down
+              docker rmi practice-01_db practice-01_backend practice-01_agent -f

@@ -39,9 +39,18 @@ var createCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		var err error
 		samplecommand := command{}
-		samplecommand.Command, _ = cmd.Flags().GetString("command")
-		samplecommand.Flag, _ = cmd.Flags().GetString("flag")
-		message, _ := json.Marshal(samplecommand)
+		samplecommand.Command, err = cmd.Flags().GetString("command")
+		if err != nil {
+			log.Printf("Erros parsing command flag: %s", err)
+		}
+		samplecommand.Flag, err = cmd.Flags().GetString("flag")
+		if err != nil {
+			log.Printf("Erros parsing flag flag, or not given: %s", err)
+		}
+		message, err := json.Marshal(samplecommand)
+		if err != nil {
+			log.Printf("Erros marshalling return command: %s", err)
+		}
 		req, err := http.NewRequest("POST", "http://localhost:3030/API/create", bytes.NewBuffer(message))
 		if err != nil {
 			log.Println(err)

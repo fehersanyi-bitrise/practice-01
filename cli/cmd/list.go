@@ -35,7 +35,13 @@ var listCmd = &cobra.Command{
 		}
 
 		logs, err := ioutil.ReadAll(res.Body)
-		res.Body.Close()
+
+		defer func() {
+			if err := res.Body.Close(); err != nil {
+				log.Printf("error closing res.body: %s", err)
+			}
+		}()
+
 		if err != nil {
 			log.Fatal(err)
 		}

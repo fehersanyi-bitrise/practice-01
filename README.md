@@ -42,7 +42,7 @@ Store the tasks and their outputs in the memory `nope`
 
 ### Extras (not in order, feel free to choose any of these)
 
-//Simple CLI tool to manage the tasks & query logs - commands for the endpoints of the server (create, list and get logs)
+Simple CLI tool to manage the tasks & query logs - commands for the endpoints of the server (create, list and get logs) `check`
 
 Use a database for storing the task data `check`
 

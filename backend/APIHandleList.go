@@ -45,7 +45,7 @@ func callDB() (map[int]command, error) {
 	}
 	for rows.Next() {
 		c := command{}
-		if err = rows.Scan(&c.ID, &c.Command, &c.Log); err != nil {
+		if err = rows.Scan(&c.ID, &c.Command, &c.Flag, &c.Log); err != nil {
 			return cmdMap, err
 		}
 		cmdMap[c.ID] = c
